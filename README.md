@@ -16,6 +16,12 @@ let name = "value";
 [1, "two", true]        // Arrays
 {"test": 12, 2: 14}     // Objects / Dictionaries
 
+// Indexing
+let a = [1, 2];
+let b = {"one": 1};
+a[0];
+b["one"];
+
 // Basic Arithmetic
 + - * /
 
@@ -69,10 +75,9 @@ let sum = fn(a, b) {
 sum(1, 2);
 
 // Builtin Functions
-let get_length = fn(array_or_string) {
-    return len(array_or_string);
-};
+len() -> 1 Argument (array or string)
+print() -> 1 Argument (integer)
 
-let a = [1, 2, 3];
-get_length(a);
+// Import Statements
+import "folder/file.lime";
 ```

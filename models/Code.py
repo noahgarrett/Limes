@@ -35,7 +35,7 @@ class OpCode(Enum):
     OpClosure = auto()
     OpGetFree = auto()
     OpCurrentClosure = auto()
-    OpImport = auto()
+    OpLoop = auto()
 
 
 class Definition(NamedTuple):
@@ -74,7 +74,7 @@ definitions: Dict[OpCode, Definition] = {
     OpCode.OpClosure: Definition("OpClosure", [2, 1]),
     OpCode.OpGetFree: Definition("OpGetFree", [1]),
     OpCode.OpCurrentClosure: Definition("OpCurrentClosure", []),
-    OpCode.OpImport: Definition("OpImport", [2])
+    OpCode.OpLoop: Definition("OpLoop", [2])
 }
 
 def lookup(op: int) -> tuple[Definition, str]:

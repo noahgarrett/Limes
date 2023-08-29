@@ -3,7 +3,7 @@ from models.Object import Object, IntegerObject, StringObject, CompiledFunction
 from models.Builtins import Builtin_Functions
 from models.AST import Node, Program, ExpressionStatement, InfixExpression, IntegerLiteral, BooleanLiteral, PrefixExpression, IfExpression
 from models.AST import BlockStatement, LetStatement, IdentifierLiteral, StringLiteral, ArrayLiteral, HashLiteral, Expression, IndexExpression
-from models.AST import FunctionLiteral, ReturnStatement, CallExpression, ImportStatement
+from models.AST import FunctionLiteral, ReturnStatement, CallExpression, ImportStatement, WhileStatement
 from models.SymbolTable import SymbolTable, Symbol, ScopeType
 
 from exec.Lexer import Lexer
@@ -108,8 +108,26 @@ class Compiler:
                 err = self.compile(p.parse_program())
                 if err is not None:
                     return err
+            case "WhileStatement":
+                node: WhileStatement = node
 
-                # self.emit(OpCode.OpImport)
+                start_loop_pos: int = len(self.current_instructions())
+
+                err = self.compile(node.condition)
+                if err is not None:
+                    return err
+
+                jump_not_truthy_pos: int = self.emit(OpCode.OpJumpNotTruthy, 6969)
+
+                err = self.compile(node.body)
+                if err is not None:
+                    return err
+                
+                offset = len(self.current_instructions()) - start_loop_pos + 1
+                self.emit(OpCode.OpLoop, offset)
+
+                after_body_pos: int = len(self.current_instructions())
+                self.change_operand(jump_not_truthy_pos, after_body_pos)
                 
             # Expressions
             case "InfixExpression":

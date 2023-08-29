@@ -229,8 +229,11 @@ class VM:
                     err = self.push(current_closure)
                     if err is not None:
                         return err
-                case OpCode.OpImport:
-                    pass
+                case OpCode.OpLoop:
+                    start_loop_offset: int = read_uint16(ins[ip + 1:])
+                    self.current_frame().ip -= start_loop_offset
+
+
     
     # region VM Helpers
     def push(self, o: Object) -> str:

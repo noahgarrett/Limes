@@ -155,6 +155,28 @@ class ReturnStatement(Statement):
     
     def type(self) -> str:
         return "ReturnStatement"
+    
+class WhileStatement(Statement):
+    def __init__(self, token: Token, condition: Expression = None, body: BlockStatement = None) -> None:
+        self.token = token
+        self.condition = condition
+        self.body = body
+
+    def token_literal(self) -> str:
+        return self.token.literal
+    
+    def string(self) -> str:
+        output: str = ""
+
+        output += "while "
+        output += self.condition.string()
+        output += " "
+        output += self.body.string()
+
+        return output
+    
+    def type(self) -> str:
+        return "WhileStatement"
 # endregion
 
 # region Expressions

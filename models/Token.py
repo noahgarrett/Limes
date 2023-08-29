@@ -51,6 +51,7 @@ class TokenType(Enum):
     ELSE = "ELSE"
     RETURN = "RETURN"
     IMPORT = "IMPORT"
+    WHILE = "WHILE"
 
 class Token:
     def __init__(self, token_type: TokenType, literal: str | None) -> None:
@@ -69,7 +70,8 @@ KEYWORDS: dict[str, TokenType] = {
     "if": TokenType.IF,
     "else": TokenType.ELSE,
     "return": TokenType.RETURN,
-    "import": TokenType.IMPORT
+    "import": TokenType.IMPORT,
+    "while": TokenType.WHILE
 }
 
 def lookup_ident(ident: str) -> TokenType:

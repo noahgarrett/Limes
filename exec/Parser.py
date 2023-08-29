@@ -6,6 +6,7 @@ from typing import Callable
 from models.AST import Statement, Expression, Program, ExpressionStatement, PrefixExpression, InfixExpression, IntegerLiteral, FloatLiteral
 from models.AST import IdentifierLiteral, LetStatement, BooleanLiteral, IfExpression, BlockStatement, AssignStatement, ReturnStatement
 from models.AST import FunctionLiteral, CallExpression, StringLiteral, ArrayLiteral, HashLiteral, IndexExpression, ImportStatement
+from models.AST import WhileStatement
 
 
 # Precedence Types
@@ -147,6 +148,8 @@ class Parser:
                 return self.__parse_return_statement()
             case TokenType.IMPORT:
                 return self.__parse_import_statement()
+            case TokenType.WHILE:
+                return self.__parse_while_statement()
             case _:
                 return self.__parse_expression_statement()
             
@@ -220,6 +223,20 @@ class Parser:
         if not self.__expect_peek(TokenType.SEMICOLON):
             return None
         
+        return stmt
+    
+    def __parse_while_statement(self) -> WhileStatement:
+        stmt: WhileStatement = WhileStatement(token=self.current_token)
+
+        self.__next_token()
+
+        stmt.condition = self.__parse_expression(P_LOWEST)
+
+        if not self.__expect_peek(TokenType.LBRACE):
+            return None
+        
+        stmt.body = self.__parse_block_statement()
+
         return stmt
     # endregion
 

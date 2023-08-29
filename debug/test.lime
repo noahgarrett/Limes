@@ -1,3 +1,7 @@
-import "sum.lime";
+while true {
+    let i = 1;
 
-print(sum(10, 10));
+    if i == 1 {
+        print(i);
+    }
+}
