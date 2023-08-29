@@ -12,6 +12,9 @@ null            // Null Values
 // Variable Declaration
 let name = "value";
 
+// Variable Re-assignment
+name = "this name";
+
 // Data Structures
 [1, "two", true]        // Arrays
 {"test": 12, 2: 14}     // Objects / Dictionaries
@@ -80,4 +83,12 @@ print() -> 1 Argument (integer)
 
 // Import Statements
 import "folder/file.lime";
+
+// While Loops
+while true {
+    print(69);
+}
+
+// For Loops
+<coming soon>
 ```

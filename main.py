@@ -18,6 +18,9 @@ if __name__ == '__main__':
         for err in p.errors:
             print(err)
         exit(1)
+
+    for s in program.statements:
+        print(s.string())
     
     comp: Compiler = Compiler()
     err = comp.compile(program)

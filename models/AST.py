@@ -61,16 +61,16 @@ class ExpressionStatement(Statement):
         return "ExpressionStatement"
     
 class AssignStatement(Statement):
-    def __init__(self, token: Token, left_value: Expression, right_value: Expression = None) -> None:
+    def __init__(self, token: Token, ident = None, right_value: Expression = None) -> None:
         self.token = token
-        self.left_value: Expression = left_value
+        self.ident: IdentifierLiteral = ident
         self.right_value: Expression = right_value
     
     def token_literal(self) -> str:
         return self.token.literal
     
     def string(self) -> str:
-        return f"{self.left_value} = {self.right_value}"
+        return f"{self.ident.string()} = {self.right_value.string()};"
     
     def type(self) -> str:
         return "AssignStatement"

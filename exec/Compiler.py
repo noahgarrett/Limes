@@ -3,7 +3,7 @@ from models.Object import Object, IntegerObject, StringObject, CompiledFunction
 from models.Builtins import Builtin_Functions
 from models.AST import Node, Program, ExpressionStatement, InfixExpression, IntegerLiteral, BooleanLiteral, PrefixExpression, IfExpression
 from models.AST import BlockStatement, LetStatement, IdentifierLiteral, StringLiteral, ArrayLiteral, HashLiteral, Expression, IndexExpression
-from models.AST import FunctionLiteral, ReturnStatement, CallExpression, ImportStatement, WhileStatement
+from models.AST import FunctionLiteral, ReturnStatement, CallExpression, ImportStatement, WhileStatement, AssignStatement
 from models.SymbolTable import SymbolTable, Symbol, ScopeType
 
 from exec.Lexer import Lexer
@@ -128,17 +128,32 @@ class Compiler:
 
                 after_body_pos: int = len(self.current_instructions())
                 self.change_operand(jump_not_truthy_pos, after_body_pos)
+            case "AssignStatement":
+                node: AssignStatement = node
+
+                existing_symbol, ok = self.symbol_table.resolve(node.ident.value)
+                if not ok:
+                    return f"Undefined variable: `{node.ident.value}`"
+
+                err = self.compile(node.right_value)
+                if err is not None:
+                    return err
+                
+                if existing_symbol.scope == ScopeType.GLOBAL_SCOPE:
+                    self.emit(OpCode.OpSetGlobal, existing_symbol.index)
+                else:
+                    self.emit(OpCode.OpSetLocal, existing_symbol.index)
                 
             # Expressions
             case "InfixExpression":
                 node: InfixExpression = node
 
                 if node.operator == "<":
-                    err = self.compile(node.left_node)
+                    err = self.compile(node.right_node)
                     if err is not None:
                         return err
                     
-                    err = self.compile(node.right_node)
+                    err = self.compile(node.left_node)
                     if err is not None:
                         return err
                     

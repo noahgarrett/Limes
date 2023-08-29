@@ -141,6 +141,9 @@ class Parser:
 
     # region Parser Execution **STATEMENT** methods
     def __parse_statement(self) -> Statement:
+        if self.current_token.type == TokenType.IDENT and self.__peek_token_is(TokenType.ASSIGN):
+            return self.__parse_assignment_statement()
+
         match self.current_token.type:
             case TokenType.LET:
                 return self.__parse_let_statement()
@@ -179,15 +182,20 @@ class Parser:
         
         return stmt
     
-    def __parse_assignment_expression(self, left_expr: Expression) -> AssignStatement:
-        self.__next_token()  # Skip the '='
+    def __parse_assignment_statement(self) -> AssignStatement:
+        stmt: AssignStatement = AssignStatement(token=self.current_token)
 
-        right_expr = self.__parse_expression(P_LOWEST)
+        stmt.ident = IdentifierLiteral(token=self.current_token, value=self.current_token.literal)
 
-        if self.__peek_token_is(TokenType.SEMICOLON):
+        self.__next_token()  # 'IDENT'
+        self.__next_token()  # '='
+
+        stmt.right_value = self.__parse_expression(P_LOWEST)
+
+        while not self.__current_token_is(TokenType.SEMICOLON) and not self.__current_token_is(TokenType.EOF):
             self.__next_token()
         
-        return AssignStatement(self.current_token, left_expr, right_expr)
+        return stmt
     
     def __parse_let_statement(self) -> LetStatement:
         stmt: LetStatement = LetStatement(token=self.current_token, name=None, value=None)

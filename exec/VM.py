@@ -118,7 +118,10 @@ class VM:
                     global_index: int = read_uint16(ins[ip + 1:])
                     self.current_frame().ip += 2
 
-                    self.globals.append(self.pop())
+                    if global_index <= len(self.globals) - 1:
+                        self.globals[global_index] = self.pop()
+                    else:
+                        self.globals.append(self.pop())
                 case OpCode.OpGetGlobal:
                     global_index: int = read_uint16(ins[ip + 1:])
                     self.current_frame().ip += 2
