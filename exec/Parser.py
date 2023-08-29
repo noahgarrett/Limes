@@ -6,7 +6,7 @@ from typing import Callable
 from models.AST import Statement, Expression, Program, ExpressionStatement, PrefixExpression, InfixExpression, IntegerLiteral, FloatLiteral
 from models.AST import IdentifierLiteral, LetStatement, BooleanLiteral, IfExpression, BlockStatement, AssignStatement, ReturnStatement
 from models.AST import FunctionLiteral, CallExpression, StringLiteral, ArrayLiteral, HashLiteral, IndexExpression, ImportStatement
-from models.AST import WhileStatement
+from models.AST import WhileStatement, ForStatement
 
 
 # Precedence Types
@@ -153,6 +153,8 @@ class Parser:
                 return self.__parse_import_statement()
             case TokenType.WHILE:
                 return self.__parse_while_statement()
+            case TokenType.FOR:
+                return self.__parse_for_statement()
             case _:
                 return self.__parse_expression_statement()
             
@@ -182,7 +184,7 @@ class Parser:
         
         return stmt
     
-    def __parse_assignment_statement(self) -> AssignStatement:
+    def __parse_assignment_statement(self, is_in_loop: bool = False) -> AssignStatement:
         stmt: AssignStatement = AssignStatement(token=self.current_token)
 
         stmt.ident = IdentifierLiteral(token=self.current_token, value=self.current_token.literal)
@@ -191,9 +193,10 @@ class Parser:
         self.__next_token()  # '='
 
         stmt.right_value = self.__parse_expression(P_LOWEST)
-
-        while not self.__current_token_is(TokenType.SEMICOLON) and not self.__current_token_is(TokenType.EOF):
-            self.__next_token()
+        
+        if not is_in_loop:
+            while not self.__current_token_is(TokenType.SEMICOLON) and not self.__current_token_is(TokenType.EOF):
+                self.__next_token()
         
         return stmt
     
@@ -240,6 +243,40 @@ class Parser:
 
         stmt.condition = self.__parse_expression(P_LOWEST)
 
+        if not self.__expect_peek(TokenType.LBRACE):
+            return None
+        
+        stmt.body = self.__parse_block_statement()
+
+        return stmt
+    
+    def __parse_for_statement(self) -> ForStatement:
+        stmt: ForStatement = ForStatement(token=self.current_token)
+
+        if not self.__expect_peek(TokenType.LPAREN):
+            return None
+        
+        self.__next_token()  # Skip the '('
+
+        stmt.initializer = self.__parse_let_statement()
+
+        if not self.__current_token_is(TokenType.SEMICOLON):
+            return None
+        
+        self.__next_token()  # Skip the ';'
+
+        stmt.condition = self.__parse_expression(P_LOWEST)
+
+        if not self.__expect_peek(TokenType.SEMICOLON):
+            return None
+        
+        self.__next_token()  # Skip the ';'
+
+        stmt.increment = self.__parse_assignment_statement(is_in_loop=True)
+
+        if not self.__expect_peek(TokenType.RPAREN):
+            return None
+        
         if not self.__expect_peek(TokenType.LBRACE):
             return None
         

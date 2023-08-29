@@ -90,5 +90,7 @@ while true {
 }
 
 // For Loops
-<coming soon>
+for (let i = 0; i < 10; i = i + 1) {
+    print(i);
+}
 ```

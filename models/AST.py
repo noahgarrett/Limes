@@ -177,6 +177,34 @@ class WhileStatement(Statement):
     
     def type(self) -> str:
         return "WhileStatement"
+    
+class ForStatement(Statement):
+    def __init__(self, token: Token, initializer: LetStatement = None, condition: Expression = None, increment: Expression = None, body: BlockStatement = None) -> None:
+        self.token = token
+        self.initializer = initializer
+        self.condition = condition
+        self.increment = increment
+        self.body = body
+
+    def token_literal(self) -> str:
+        return self.token.literal
+    
+    def string(self) -> str:
+        output: str = ""
+
+        output += "for "
+        output += f"({self.initializer.string()}; "
+        output += f"{self.condition.string()}; "
+        output += f"{self.increment.string()})"
+        output += "{ "
+        output += self.body.string()
+        output += " }"
+
+        return output
+    
+    def type(self) -> str:
+        return "ForStatement"
+
 # endregion
 
 # region Expressions
