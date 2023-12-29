@@ -4,6 +4,8 @@ from exec.Compiler import Compiler
 from exec.VM import VM
 from time import time
 
+DEBUG: bool = False
+
 if __name__ == '__main__':
     with open("debug/test.lime", "r") as f:
         code: str = f.read()
@@ -19,8 +21,9 @@ if __name__ == '__main__':
             print(err)
         exit(1)
 
-    for s in program.statements:
-        print(s.string())
+    if DEBUG:
+        for s in program.statements:
+            print(s.string())
     
     comp: Compiler = Compiler()
     err = comp.compile(program)
@@ -36,9 +39,12 @@ if __name__ == '__main__':
     et = time()
     execution_time = et - st
 
-    print(f"\n== Ending Stack (SP:{machine.stack.sp}) ==\n{[i.inspect() if i is not None else i for i in machine.stack.items[0:10]]}")
+    if DEBUG:
+        print(f"\n== Ending Stack (SP:{machine.stack.sp}) ==\n{[i.inspect() if i is not None else i for i in machine.stack.items[0:10]]}")
     
     last_popped = machine.stack.last_popped_elem
-    print(f"\n== Last Popped ==\n{last_popped.inspect()}\n")
 
-    print(f"== Program executed in: {round(execution_time * 1000, 2)} ms. ({round(execution_time, 2)} sec.) ==")
+    if DEBUG:
+        print(f"\n== Last Popped ==\n{last_popped.inspect()}\n")
+
+    print(f"\n== Program executed in: {round(execution_time * 1000, 2)} ms. ({round(execution_time, 2)} sec.) ==")

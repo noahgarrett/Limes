@@ -76,8 +76,22 @@ KEYWORDS: dict[str, TokenType] = {
     "for": TokenType.FOR
 }
 
+GENZ_KEYWORDS: dict[str, TokenType] = {
+    "lit": TokenType.LET,
+    "be": TokenType.ASSIGN,
+    "rn": TokenType.SEMICOLON,
+    "nocap": TokenType.TRUE,
+    "cap": TokenType.FALSE,
+    "sus": TokenType.IF,
+    "imposter": TokenType.ELSE
+}
+
 def lookup_ident(ident: str) -> TokenType:
     tt: TokenType | None = KEYWORDS.get(ident)
+    if tt is not None:
+        return tt
+    
+    tt: TokenType | None = GENZ_KEYWORDS.get(ident)
     if tt is not None:
         return tt
     

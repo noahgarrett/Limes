@@ -19,13 +19,20 @@ def len_func(*args: Object) -> Object:
 def print_func(*args: Object) -> Object:
     if not len(args) == 1:
         return new_error(f"wrong number of arguments for `print`. got={len(args)}, want=1")
-    
+
     match args[0].type():
         case "INTEGER":
             print(args[0].value)
-            return NULL_OBJ
+        case "BOOL":
+            print(args[0].value)
+        case "FLOAT":
+            print(args[0].value)
+        case "STRING":
+            print(args[0].value)
         case _:
             return new_error(f"Object type {args[0].type()} not implemented for `print`")
+        
+    return NULL_OBJ
 # endregion
 
 # region Helpers

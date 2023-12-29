@@ -1,9 +1,9 @@
 from models.Code import Instructions, OpCode, make
-from models.Object import Object, IntegerObject, StringObject, CompiledFunction
+from models.Object import Object, IntegerObject, StringObject, CompiledFunction, FloatObject
 from models.Builtins import Builtin_Functions
 from models.AST import Node, Program, ExpressionStatement, InfixExpression, IntegerLiteral, BooleanLiteral, PrefixExpression, IfExpression
 from models.AST import BlockStatement, LetStatement, IdentifierLiteral, StringLiteral, ArrayLiteral, HashLiteral, Expression, IndexExpression
-from models.AST import FunctionLiteral, ReturnStatement, CallExpression, ImportStatement, WhileStatement, AssignStatement, ForStatement
+from models.AST import FunctionLiteral, ReturnStatement, CallExpression, ImportStatement, WhileStatement, AssignStatement, ForStatement, FloatLiteral
 from models.SymbolTable import SymbolTable, Symbol, ScopeType
 
 from exec.Lexer import Lexer
@@ -289,6 +289,11 @@ class Compiler:
 
                 integer: IntegerObject = IntegerObject(value=node.value)
                 self.emit(OpCode.OpConstant, self.add_constant(integer))
+            case "FloatLiteral":
+                node: FloatLiteral = node
+
+                f_loat: FloatObject = FloatObject(value=node.value)
+                self.emit(OpCode.OpConstant, self.add_constant(f_loat))
             case "BooleanLiteral":
                 node: BooleanLiteral = node
 

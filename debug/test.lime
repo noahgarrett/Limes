@@ -1,3 +1,8 @@
-for (let i = 0; i < 10; i = i + 1) {
-    print(i);
+lit a be 10 - 10 rn
+
+sus a == 0 {
+    print("yes");
+} imposter {
+    print("no");
 }
+
